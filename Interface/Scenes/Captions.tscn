@@ -1,0 +1,74 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Interface/Scripts/Close_Button.gd" type="Script" id=1]
+
+[node name="Captions" type="MarginContainer"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -160.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 160, 50 )
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="."]
+modulate = Color( 1, 1, 1, 0.588235 )
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 150.0
+margin_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Help_Button" type="Button" parent="Panel/HBoxContainer"]
+margin_right = 32.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "?"
+
+[node name="Minimize_Button" type="Button" parent="Panel/HBoxContainer"]
+margin_left = 36.0
+margin_right = 68.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "_"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Maximize_Button" type="Button" parent="Panel/HBoxContainer"]
+margin_left = 72.0
+margin_right = 104.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Close_Button" type="Button" parent="Panel/HBoxContainer"]
+margin_left = 108.0
+margin_right = 140.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "x"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Panel/HBoxContainer/Close_Button" to="Panel/HBoxContainer/Close_Button" method="_on_Close_Button_pressed"]
