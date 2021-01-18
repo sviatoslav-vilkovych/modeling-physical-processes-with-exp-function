@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Interface/Scripts/TextEdit.gd" type="Script" id=1]
-[ext_resource path="res://Interface/Scripts/Panel.gd" type="Script" id=2]
 [ext_resource path="res://Interface/Scripts/Calculate_Button.gd" type="Script" id=3]
 
 [node name="Input" type="MarginContainer"]
@@ -24,7 +23,6 @@ margin_top = 10.0
 margin_right = 390.0
 margin_bottom = 390.0
 mouse_filter = 1
-script = ExtResource( 2 )
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 anchor_right = 1.0
@@ -49,7 +47,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="InputData_Label" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 margin_right = 360.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
@@ -177,9 +175,41 @@ margin_bottom = 132.0
 size_flags_horizontal = 4
 text = "Calculate"
 script = ExtResource( 3 )
-[connection signal="draw" from="Panel" to="Panel" method="_on_Panel_draw"]
-[connection signal="mouse_entered" from="Panel" to="Panel" method="_on_Panel_mouse_entered"]
-[connection signal="mouse_exited" from="Panel" to="Panel" method="_on_Panel_mouse_exited"]
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+margin_top = 136.0
+margin_right = 360.0
+margin_bottom = 150.0
+text = "MSE and graphic points"
+align = 1
+
+[node name="MSE_Container" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+margin_top = 154.0
+margin_right = 360.0
+margin_bottom = 172.0
+rect_min_size = Vector2( 0, 18 )
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer/MSE_Container"]
+margin_right = 100.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 100, 18 )
+size_flags_vertical = 0
+text = "MSE"
+align = 1
+valign = 1
+
+[node name="TextEdit" type="TextEdit" parent="Panel/MarginContainer/VBoxContainer/MSE_Container"]
+margin_left = 104.0
+margin_right = 360.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+readonly = true
+script = ExtResource( 1 )
 [connection signal="focus_entered" from="Panel/MarginContainer/VBoxContainer/StartPoint_Container/TextEdit" to="Panel/MarginContainer/VBoxContainer/StartPoint_Container/TextEdit" method="_on_TextEdit_focus_entered"]
 [connection signal="focus_exited" from="Panel/MarginContainer/VBoxContainer/StartPoint_Container/TextEdit" to="Panel/MarginContainer/VBoxContainer/StartPoint_Container/TextEdit" method="_on_TextEdit_focus_exited"]
 [connection signal="focus_entered" from="Panel/MarginContainer/VBoxContainer/EndPoint_Container/TextEdit" to="Panel/MarginContainer/VBoxContainer/EndPoint_Container/TextEdit" method="_on_TextEdit_focus_entered"]
@@ -189,3 +219,5 @@ script = ExtResource( 3 )
 [connection signal="focus_entered" from="Panel/MarginContainer/VBoxContainer/Function_Container/TextEdit" to="Panel/MarginContainer/VBoxContainer/Function_Container/TextEdit" method="_on_TextEdit_focus_entered"]
 [connection signal="focus_exited" from="Panel/MarginContainer/VBoxContainer/Function_Container/TextEdit" to="Panel/MarginContainer/VBoxContainer/Function_Container/TextEdit" method="_on_TextEdit_focus_exited"]
 [connection signal="pressed" from="Panel/MarginContainer/VBoxContainer/Calculate_Button" to="Panel/MarginContainer/VBoxContainer/Calculate_Button" method="_on_Calculate_Button_pressed"]
+[connection signal="focus_entered" from="Panel/MarginContainer/VBoxContainer/MSE_Container/TextEdit" to="Panel/MarginContainer/VBoxContainer/MSE_Container/TextEdit" method="_on_TextEdit_focus_entered"]
+[connection signal="focus_exited" from="Panel/MarginContainer/VBoxContainer/MSE_Container/TextEdit" to="Panel/MarginContainer/VBoxContainer/MSE_Container/TextEdit" method="_on_TextEdit_focus_exited"]

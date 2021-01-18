@@ -1,0 +1,23 @@
+[gd_scene format=2]
+
+[node name="Legend_Container" type="HBoxContainer"]
+margin_top = 136.0
+margin_right = 360.0
+margin_bottom = 136.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 40, 14 )
+mouse_filter = 1
+
+[node name="Label" type="Label" parent="."]
+margin_left = 44.0
+margin_right = 171.0
+margin_bottom = 14.0
+mouse_filter = 1
+text = "Base function name"

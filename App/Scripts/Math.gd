@@ -208,11 +208,11 @@ static func approximation_function(a, b, c, x):
 static func actual_function(x):
 	# Actual function, we try to approximate with
 	# exponential function with three parameters.
-	if (Singleton.actual_function == "cosx"):
+	if (Singleton.actual_function == "cos(x)"):
 		return cos(x)+0.01 # 3*(x)*x+2*x-5
-	elif (Singleton.actual_function == "sinx"):
+	elif (Singleton.actual_function == "sin(x)"):
 		return sin(x)
-	elif (Singleton.actual_function == "3x^2+2x-5"):
+	elif (Singleton.actual_function == "3*x^2+2*x-5"):
 		return 3*(x)*x+2*x-5;
 
 static func multiple_matrix(a : Array, b : Array) -> Array:
