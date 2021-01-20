@@ -1,75 +1,5 @@
 class_name Math
 
-
-static func calculateLU(matrix : Array) -> Array:
-	var n = matrix.size()
-	var lower = Utility.create_2d_array(n, n, 0)
-	var upper = Utility.create_2d_array(n, n, 0)
-	for i in n: 
-		# U
-		for k in range(i, n):
-			# Summation of L(i, j) * U(j, k)
-			var sum = 0;
-			for j in range(i):
-				sum += (lower[i][j] * upper[j][k]);
-			# Evaluating U(i, k)
-			upper[i][k] = matrix[i][k] - sum;
-		# L
-		for k in range(i, n):
-			if (i == k):
-				lower[i][i] = 1; # Diagonal as 1
-			else:
-				# Summation of L(k, j) * U(j, i)
-				var sum = 0;
-				for j in range(i):
-					sum += (lower[k][j] * upper[j][i])
-				# Evaluating L(k, i)
-				lower[k][i] = (matrix[k][i] - sum) / upper[i][i];
-	return [lower, upper]
-
-# calculate LU using Cholesky-Banachiewicz and Cholesky–Crout algorithm
-static func calculateLLT(matrix : Array) -> Array:
-	var n = matrix.size()
-	var lower = Utility.create_2d_array(n, n, 0)
-	var upper = Utility.create_2d_array(n, n, 0)
-	
-	lower[0][0] = sqrt(matrix[0][0])
-	upper[0][0] = lower[0][0]
-	
-	lower[1][0] = matrix[1][0]/lower[0][0]
-	lower[2][0] = matrix[2][0]/lower[0][0]
-	upper[0][1] = lower[1][0]
-	upper[0][2] = lower[2][0]
-	
-	lower[1][1] = sqrt(matrix[1][1] - pow(lower[1][0], 2))
-	upper[1][1] = lower[1][1]
-	
-	lower[2][1] = (matrix[2][1] - lower[2][0]*lower[1][0])/lower[1][1]
-	upper[1][2] = lower[2][1]
-	
-	lower[2][2] = sqrt(matrix[2][2] - pow(lower[2][0], 2) - pow(lower[2][1], 2))
-	upper[2][2] = lower[2][2]
-	
-	return [lower, upper]
-
-static func calculateX_using_LLT(lu, b):
-	var lu_size = lu[0].size()
-	# find y'
-	var l = lu[0]
-	var y = []
-	y.resize(lu_size)
-	for i in range(lu_size):
-		y[i] = (b[0][i] - sum_of_subarray(0, i, l[i], y)) / (l[i][i]);
-	
-	# find x
-	var u = lu[1]
-	var x = []
-	x.resize(lu_size)
-	for i in range(lu_size):
-		x[lu_size - i - 1] = (y[lu_size - i - 1] - sum_of_subarray((lu_size - i - 1) + 1, lu_size - 1, u[lu_size - i - 1], x)) / (u[lu_size - i - 1][lu_size - i - 1]);
-		
-	return x;
-
 static func calculateX_using_Gaussian(a, b):
 	var mat = Utility.create_2d_array(4, 3, 0)
 	var res = [0, 0, 0]
@@ -209,83 +139,35 @@ static func actual_function(x):
 	# Actual function, we try to approximate with
 	# exponential function with three parameters.
 	if (Singleton.actual_function == "cos(x)"):
-		return cos(x)+0.01 # 3*(x)*x+2*x-5
+		return cos(x)+0.0001 # 3*(x)*x+2*x-5
 	elif (Singleton.actual_function == "sin(x)"):
-		return sin(x)
-	elif (Singleton.actual_function == "3*x^2+2*x-5"):
-		return 3*(x)*x+2*x-5;
+		return sin(x)+0.0001
+	elif (Singleton.actual_function == "3*x^3-2*x+1"):
+		return 3*pow(x,3)-2*x+1;
+	elif (Singleton.actual_function == "1/x^2"):
+		return 1/(x*x);
+	elif (Singleton.actual_function == "2*e^(x-3*x^2)"):
+		return 2*exp(x-3*x*x)
 
-static func multiple_matrix(a : Array, b : Array) -> Array:
-	# (a_1 a_2 a_3)		(b_1)	(a_1 * b_1 + a_2 * b_2 + a_3 * b_3)
-	# (a_4 a_5 a_6)	*	(b_2) =	(a_4 * b_1 + a_5 * b_2 + a_6 * b_3)
-	# (a_7 a_8 a_9)		(b_3)	(a_7 * b_1 + a_8 * b_2 + a_9 * b_3)
-	var ab = []
-	ab.resize(a.size())
-	
-	for i in a.size():
-		ab[i] = a[i][0]*b[0] + a[i][1]*b[2] + a[i][2]*b[2]
-	return ab;
+static func mse(value, approximation_value):
+	var mse = 0
+	for i in range(approximation_value.size()):
+		mse += pow(approximation_value[i] - value[i], 2)
+	mse = sqrt(mse / approximation_value.size());
+	return mse
 
-static func substract_matrix(a : Array, b : Array) -> Array:
-	return [
-		a[0] - b[0],
-		a[1] - b[1],
-		a[2] - b[2]
-	]
-
-static func differentiable_functions_values(x, y, abc) -> Array:
-	# (A) = dz/da = 2*sum[(y_i-approximation_function(abc, x_i)) * dapproximation_function/da]
-	# (B) = dz/db = 2*sum[first_multiplier * dapproximation_function/db]
-	# (C) = dz/dc = 2*sum[first_multiplier * dapproximation_function/dc]
-	var sqrtdiff_abc = [0, 0, 0]
+static func polute_data_with_noise(data):
+	var coef = 0.1
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	var new_data = data
+	var min_y = abs(new_data[1][0]);
+	for i in new_data[1].size():
+		if abs(new_data[1][i]) < abs(min_y):
+			min_y = abs(data[1][i])
 	
-	for i in x.size():
-		var fm = first_multiplier(x[i], y[i], abc[0], abc[1], abc[2])
-		sqrtdiff_abc[0] += fm*exp(abc[1]*x[i] + abc[2]*x[i]*x[i])
-		sqrtdiff_abc[1] += fm*approximation_function(abc[0], abc[1], abc[2], x[i])*x[i]
-		sqrtdiff_abc[2] += fm*approximation_function(abc[0], abc[1], abc[2], x[i])*x[i]*x[i]
-		
-	return sqrtdiff_abc;
-# res = approximation_function(abc, x_i) - y_i
-static func first_multiplier(x_i, y_i, a, b, c):
-	var y_a = approximation_function(a, b, c, x_i)
-	return y_a - y_i;
-
-static func inverse_jacobian(x, y, abc) -> Array:
-	# (dA/da	dA/db	dA/dc)
-	# (dB/da	dB/db	dB/dc)
-	# (dC/da	dC/db	dC/dc)
-	var jacobian = Jacobian.calculate_jacobian(abc[0], abc[1], abc[2], x, y);
-	return inverse_matrix(jacobian)
-
-#			[a b c]				[A D G]
-# A^(-1) =	[d e f] = 1/detA *	[B E H]
-#			[g h i]				[C F I]
-# A = -(ei-fh),	D = -(bi-ch),	G = (bf-ce),
-# B = -(di-fg),	E = (ai-cg),	H = -(af-cd),
-# C = (dh-eg),	F = -(ah-bg),	I = (ae-bd).
-# detA = aA + bB + cC
-static func inverse_matrix(matrix) -> Array:
-	var a = - (matrix[1][1]*matrix[2][2] - matrix[1][2]*matrix[2][1])
-	var b = - (matrix[1][0]*matrix[2][2] - matrix[1][2]*matrix[2][0])
-	var c = (matrix[1][0]*matrix[2][1] - matrix[1][1]*matrix[2][0])
-	var det = matrix[0][0]*a + matrix[0][1]*b + matrix[0][2]*c
-	var d = - (matrix[0][1]*matrix[2][2] - matrix[0][2]*matrix[2][1])
-	var e = (matrix[0][0]*matrix[2][2] - matrix[0][2]*matrix[2][0])
-	var f = - (matrix[0][0]*matrix[2][1] - matrix[0][1]*matrix[2][0])
-	var g = (matrix[0][1]*matrix[1][2] - matrix[0][2]*matrix[1][1])
-	var h = - (matrix[0][0]*matrix[1][2] - matrix[0][2]*matrix[1][0])
-	var i = (matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0])
-	
-	return [
-		[a/det, d/det, g/det],
-		[b/det, e/det, h/det],
-		[c/det, f/det, i/det]
-	]
-	
-static func newton_iteration(x, y, initial_guess):
-	var inverse_jacobian = inverse_jacobian(x, y, initial_guess)
-	var differentiable_functions_values = differentiable_functions_values(x, y, initial_guess)
-	var b = multiple_matrix(inverse_jacobian, differentiable_functions_values)
-	return substract_matrix(initial_guess, b);
-	
+	for i in new_data[1].size():
+		if (rng.randi_range(0,4) == 0):
+			new_data[1][i] = new_data[1][i] + (min_y*coef if rng.randi_range(0,1) == 1 || new_data[1][i] - min_y*coef < 0 else -min_y*coef)
+			
+	return new_data;

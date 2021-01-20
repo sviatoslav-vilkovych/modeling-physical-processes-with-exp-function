@@ -32,7 +32,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="modeling-physical-processes-with-exp-function"
+config/name="Моделювання фізичних залежностей методом найменших квадратів експоненціальною функцією з трьома параметрами (modeling-physical-processes-with-exp-function)"
 run/main_scene="res://App/Scenes/App.tscn"
 config/icon="res://icon.png"
 
